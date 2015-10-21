@@ -165,6 +165,7 @@ sc' input = sc input ""
 i :: String -> [Token]
 i "" = error "Unexpected end of string"
 i "$" = [(Symbol DOLLAR)]
+i (' ':l) = i l
 {-
   f è un caratttere da analizzare e può essere:
   - un numero
@@ -176,10 +177,8 @@ i "$" = [(Symbol DOLLAR)]
 i input@(f:l)
     -- Riconoscimento dei numeri
     | f == '~' =
-          if isDigitChar (head l) then     
-            let (t,r) = n' l True -- scarto il carattere ~ e cerco un numero a partire dal carattere successivo
-            in  t:(i r)
-          else error "Hai cercato di mettere una stringa negativa."
+          let (t,r) = n' l True -- scarto il carattere ~ e cerco un numero a partire dal carattere successivo
+          in  t:(i r)
     | isDigitChar f =                
           let (t,r) = n' input False 
           in  t:(i r)
@@ -198,9 +197,7 @@ i input@(f:l)
           -- Devo scartare f altrimenti sc' non trova la costante stringa
           let (t,r) = sc' l
           in  t:(i r)
-    | isSpace f =
-          i l
-          
+
 -- Funzione principale per l'analisi lessicale
 lexi :: String -> [Token]
 lexi = i
