@@ -18,7 +18,7 @@ data Keyword_T = LET | IN | END | LETREC | AND | IF | THEN | ELSE | LAMBDA
 data Operator_T = EQ | LEQ | CAR | CDR | CONS | ATOM
     deriving (Show,Eq)
 
-data Symbol_T = LPAREN | RPAREN | EQUALS | PLUS | MINUS | TIMES | DIVISION |VIRGOLA| DOLLAR
+data Symbol_T = LPAREN | RPAREN | EQUALS | PLUS | MINUS | TIMES | DIVISION | VIRGOLA| DOLLAR | SEMICOLON -- Aggiunto SEMICOLON (;) per grammatica LL(1)
     deriving (Show,Eq)
 
 data Token = Keyword Keyword_T | Operator Operator_T | Id String |
@@ -44,7 +44,8 @@ isSeparator c = c `elem` "()=$,"
 -- Testa se è uno spazio o accapo
 isSpace c = c `elem` [' ', '\n', '\f', '\r', '\t']
 
-isSymbol c = c `elem` "()=+-*/,"
+-- isSymbol c = c `elem` "()=+-*/,"
+isSymbol c = c `elem` "()=+-*/,;" -- Aggiunto il ; per grammatica LL(1)
 
 
 {- data una stringa X la confronta con le parole chiavi e con gli operatori
@@ -87,6 +88,7 @@ toSymbol c = case c of
     '/' -> DIVISION
     '=' -> EQUALS
     ',' -> VIRGOLA
+    ';' -> SEMICOLON  -- Agginta per grammatica LL(1)
     
 
 
