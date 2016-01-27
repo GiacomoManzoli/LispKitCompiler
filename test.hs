@@ -102,13 +102,13 @@ pars_test6 = (f,Return [Symbol DOLLAR])
 pars_test7 = (g,Return [Symbol DOLLAR])
 pars_test8 = (h,Return [Symbol DOLLAR])
 
-pars_test = parse (fst pars_test1) == snd pars_test1 &&
-            parse (fst pars_test2) == snd pars_test2 &&
-            parse (fst pars_test3) == snd pars_test3 &&
-            parse (fst pars_test4) == snd pars_test4 &&
-            parse (fst pars_test5) == snd pars_test5 &&
-            parse (fst pars_test6) == snd pars_test6 &&
-            parse (fst pars_test7) == snd pars_test7 &&
-            parse (fst pars_test8) == snd pars_test8 &&
-            True
+--pars_test = parse (fst pars_test1) == snd pars_test1 &&
+--            parse (fst pars_test2) == snd pars_test2 &&
+--            parse (fst pars_test3) == snd pars_test3 &&
+--            parse (fst pars_test4) == snd pars_test4 &&
+--            parse (fst pars_test5) == snd pars_test5 &&
+--            parse (fst pars_test6) == snd pars_test6 &&
+--            parse (fst pars_test7) == snd pars_test7 &&
+--            parse (fst pars_test8) == snd pars_test8 &&
+--            True
 
