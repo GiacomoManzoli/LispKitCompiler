@@ -1,5 +1,26 @@
 import Lexer
 import Analizzatore
+import Compilatore
+import Interprete
+
+
+{-
+Lexer:
+    * lexi :: String -> [Token]
+Analizzatore:
+    * parse :: String -> [LKC]
+Compilatore:
+    * compile :: [LKC] -> [Secdexpr]
+    * compile_string :: String -> [Secdexpr]
+Interprete:
+    * fin :: [Secdexpr] -> Valore
+-}
+
+
+
+execute :: String -> Valore
+execute x = fin (compile (parse x))
+
 
 
 test_all = lex_test
@@ -59,6 +80,7 @@ h = "let "++
         "f1 "++
     "end $"
 
+bad_p = " let 123 in e end $"
 -- ###########################
 -- Test Analizzatore lessicale
 -- ###########################

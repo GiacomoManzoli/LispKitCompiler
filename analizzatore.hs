@@ -1,4 +1,4 @@
-module Analizzatore(Exc(..), progdoll, parse) where
+module Analizzatore(Exc(..), LKC(..), progdoll, parse) where
 
 import Lexer -- importa l'analizzatore lessicale, in particolare la funzione lexi e il datatype Token
 import Prelude hiding (EQ,exp)
@@ -116,16 +116,16 @@ progdoll x = show (prog x)
 --  Area per l'analisi sintattica
 -- ##############################################
 
--- FA COSE
---funzione che ritorna il valore LKC alla fine del programma
--- parse :: String -> Exc [Token]
-parse x = prog (lexi x)
+-- parse: funzione che dato un programma ritorna la monade Exc con l'albero astratto
+-- del programma LKC oppure un errore di parsing
+parse :: String -> LKC
+parse x = extractLKC (prog(lexi x))
 
--- FA COSE
 --estrae il valore LKC dalla monade finale
---extractLKC :: Exc ([Token], LKC) -> LKC
---extractLKC (Return (a,b)) = b
---extractLKC (Raise x) = error x
+extractLKC :: Exc ([Token], LKC) -> LKC
+extractLKC (Return (a,b)) = b
+extractLKC (Raise x) = error x
+
 
 {- 
   STRUTTURA DI UN PROGRAMMA LispKit
