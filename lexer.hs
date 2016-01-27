@@ -1,28 +1,59 @@
 module Lexer (
-Token(..),
-Symbol_T(..),
-Operator_T(..),
-Keyword_T(..),
-lexi,
-c,
-d
+  Token(..),
+  Symbol_T(..),
+  Operator_T(..),
+  Keyword_T(..),
+  lexi -- Funzioni principale che esegue l'analisi lessicale lexi :: String -> [Token]
 ) where
 
 import Prelude hiding (EQ)
 
--- Tipi
+-- ##############################################
+--  Area per la definzione dei datatype
+-- ##############################################
 
-data Keyword_T = LET | IN | END | LETREC | AND | IF | THEN | ELSE | LAMBDA
+-- Datatype per le keyword del linguaggio
+data Keyword_T = LET 
+               | IN 
+               | END 
+               | LETREC 
+               | AND 
+               | IF 
+               | THEN 
+               | ELSE 
+               | LAMBDA -- keyword per definire una funzione anonima
     deriving (Show,Eq)
 
-data Operator_T = EQ | LEQ | CAR | CDR | CONS | ATOM
+-- Datatype per gli operatori del linguaggio
+data Operator_T = EQ    -- uguaglianza
+                | LEQ   -- <=
+                | CAR   -- ??
+                | CDR   -- ??
+                | CONS  -- ??
+                | ATOM  -- ??
     deriving (Show,Eq)
 
-data Symbol_T = LPAREN | RPAREN | EQUALS | PLUS | MINUS | TIMES | DIVISION | VIRGOLA| DOLLAR | SEMICOLON -- Aggiunto SEMICOLON (;) per grammatica LL(1)
+-- Datatype per i simboli del linguaggio
+data Symbol_T = LPAREN -- (
+              | RPAREN -- )
+              | EQUALS 
+              | PLUS 
+              | MINUS 
+              | TIMES 
+              | DIVISION 
+              | VIRGOLA
+              | DOLLAR    -- simbolo che indica la terminazione del programma
+              | SEMICOLON -- Aggiunto SEMICOLON (;) per grammatica LL(1)
     deriving (Show,Eq)
 
-data Token = Keyword Keyword_T | Operator Operator_T | Id String |
-    Symbol Symbol_T | Number Integer | String String | Bool Bool | Nil
+data Token = Keyword Keyword_T    -- token che rappresenta una keyword LispKit
+           | Operator Operator_T  -- token che rappresenta un operatore, es: EQ, LEQ
+           | Id String            -- token che rappresenta il nome di un identificatore
+           | Symbol Symbol_T      -- token che rappresenta un simbolo, es: LPAREN, 
+           | Number Integer       -- token che rappresenta un numero intero
+           | String String        -- token che rappresenta una stringa
+           | Bool Bool            -- token che rappresenta un booleano
+           | Nil                  -- token che rappresenta un NIL
     deriving (Show,Eq)
 
 
@@ -207,34 +238,7 @@ i input@(f:l)
 lexi :: String -> [Token]
 lexi = i
 
-c = "letrec  FACT = lambda ( X ) if  eq ( X, 0 ) then 1 else  X*FACT(  X- 1 )and G = lambda ( H L ) if  eq ( L,  nil ) then L else cons( H(car( L ) ), G ( H, cdr ( L ) )) in G ( FACT, cons(1, cons(2, cons(3, nil))) ) end $";
 
-d = "let x=cons(\"ab\", cons(\"cd\", nil)) in if true then cons(\"01\", x) else nil end $";
-
--- test1 per la lettura corretta dei numeri
-test1 = ("123 123 ~123 $", [(Number 123),(Number 123), (Number (-123)), (Symbol DOLLAR)])
-
--- test2 per la lettura corretta dei simboli
-test2 = (" = + ( ) $",[Symbol EQUALS,Symbol PLUS,Symbol LPAREN,Symbol RPAREN,Symbol DOLLAR])
-
--- test3 per la lettura di una keyword o variabile
-test3 = (" let x $", [Keyword LET,Id "x",Symbol DOLLAR])
-
--- test4 per la lettura di un'assegnazione completa
-test4 = (" let x = 4 $", [Keyword LET,Id "x",Symbol EQUALS,Number 4,Symbol DOLLAR])
-  
--- test5 "falsetto"
-test5 = ("falsetto $",[Id "falsetto",Symbol DOLLAR])
-
--- test6 costante stringa
-test6 = ("\"Ciao mamma\" $", [String "Ciao mamma",Symbol DOLLAR])
-
-test = i (fst test1)  == snd test1 &&
-       i (fst test2)  == snd test2 &&
-       i (fst test3)  == snd test3 &&
-       i (fst test4)  == snd test4 &&
-       i (fst test5) == snd test5 &&
-       True
 
 
 
