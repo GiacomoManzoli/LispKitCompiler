@@ -52,7 +52,7 @@ g = "let f1 = lambda () let x = 2 in x end in f1 end $"
 h = "let "++
         "f1 = lambda () "++
                     "letrec f2 = lambda (z) if eq(z,1) then 1 " ++
-                                            "else *f2(z-1) "++
+                                            "else z*f2(z-1) "++
                     "in f2 "++
                     "end "++
     "in "++

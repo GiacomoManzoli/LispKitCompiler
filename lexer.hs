@@ -27,9 +27,9 @@ data Keyword_T = LET
 -- Datatype per gli operatori del linguaggio
 data Operator_T = EQ    -- uguaglianza
                 | LEQ   -- <=
-                | CAR   -- ??
-                | CDR   -- ??
-                | CONS  -- ??
+                | CAR   -- head di una lista
+                | CDR   -- tail di una lista
+                | CONS  -- concatenazione di due liste
                 | ATOM  -- ??
     deriving (Show,Eq)
 
@@ -41,9 +41,8 @@ data Symbol_T = LPAREN -- (
               | MINUS 
               | TIMES 
               | DIVISION 
-              | VIRGOLA
+              | VIRGOLA   -- viene anche utilizzato per separare sequenze di espressioni
               | DOLLAR    -- simbolo che indica la terminazione del programma
-              | SEMICOLON -- Aggiunto SEMICOLON (;) per grammatica LL(1)
     deriving (Show,Eq)
 
 data Token = Keyword Keyword_T    -- token che rappresenta una keyword LispKit
@@ -119,9 +118,7 @@ toSymbol c = case c of
     '/' -> DIVISION
     '=' -> EQUALS
     ',' -> VIRGOLA
-    ';' -> SEMICOLON  -- Agginta per grammatica LL(1)
     
-
 
 {- Funzioni che implementano direttamente gli stati dell'automa. Osserva che
    non c'è ricorsione. Il passaggio dallo stato iniziale e principale I ad un
