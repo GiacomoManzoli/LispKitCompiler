@@ -28,11 +28,12 @@ test_all = lex_test
 -- #########################
 -- Programmi LispKit
 -- #########################
+aa = "letrec x = 2 + 3 and z = x + 2 in x+z end $" -- non supportato
 
 -- applica il fattoriale a tutti gli elementi di una lista di interi
-a = "letrec FACT = lambda (X) if eq(X,0) then 1 else X*FACT(X-1) and " ++
-    "G = lambda (H L) if eq(L,nil) then L else cons(H(car(L)),G(H,cdr(L))) " ++
-    "in G(FACT,cons(1,cons(2,cons(3,nil)))) end $";
+a = "letrec FACT = lambda (X) if eq(X,0) then 1 else X*FACT(X-1) and " ++ "a = 4 and b = a in FACT(a) end $"
+    --"G = lambda (H L) if eq(L,nil) then L else cons(H(car(L)),G(H,cdr(L))) " ++
+    --"in G(FACT,cons(1,cons(2,cons(3,nil)))) end $";
 
 b = "let x = cons(\"ab\",cons(\"cd\",nil)) in if true then cons(\"01\",x) " ++
     "else nil end $";

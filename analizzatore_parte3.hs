@@ -90,16 +90,9 @@ progdoll x = show (prog x)
 --  Area per l'analisi sintattica
 -- ##############################################
 
--- FA COSE
 --funzione che ritorna il valore LKC alla fine del programma
 -- parse :: String -> Exc [Token]
 parse x = prog (lexi x)
-
--- FA COSE
---estrae il valore LKC dalla monade finale
---extractLKC :: Exc ([Token], LKC) -> LKC
---extractLKC (Return (a,b)) = b
---extractLKC (Raise x) = error x
 
 {- 
   STRUTTURA DI UN PROGRAMMA LispKit

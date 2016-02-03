@@ -43,12 +43,12 @@ data Dump = CONTR  [Secdexpr]
 
 --funzione che crea l'ambiente dinamico ricorsivo necessario per il trattamento della ricorsione. Serve nel caso Rap
 {-
-  lazyE viene invocata con due volta la stessa lista dei parametri 
+  lazyE viene invocata con due volta la stessa lista dei valori dei binders 
 -}
 lazyE::[Valore]-> [Valore]->[Valore] 
 lazyE [] _ = []
 {-
-  Se la lista non è vuota esegue lazyClo sull'elemento in testa, dopodiché continua ricorsivamente sui parametri successivi
+  Se la lista non è vuota esegue lazyClo sull'elemento in testa, dopodiché continua ricorsivamente sui valori successivi
 -} 
 lazyE (a:b) c = ((lazyClo a c):(lazyE b c))
 
@@ -216,14 +216,14 @@ interprete s e c d =
                                      -- un record [OGA], altrimenti è necessario sollevare un'errore
                                      ([OGA]:re) -> case (head (tail s)) of
                                                    {-
-                                                      Nello stack, sotto la chiusura, deve esserci la VLISTA con i parametri.
+                                                      Nello stack, sotto la chiusura, deve esserci la VLISTA contenente i valori delle parti destre dei binders.
                                                       Se c'è viene eseguito il corpo della funzione con:
                                                         - stack vuoto
-                                                        - ambiente dinamico con in cima la lista dei parametri e sotto l'ambiente della chiusura. (LazyE ...) fa si che la lista dei parametri diventi circolare e viene messo al posto di OGA. 
+                                                        - ambiente dinamico con in cima la lista delle parti destre dei binders e sotto l'ambiente della chiusura. (LazyE ...) fa si che la lista dei parametri diventi circolare e viene messo al posto di OGA. 
                                                         - come controllo c'è il codice della funzione
                                                       Viene poi fatto il dump dello stato attuale
                                                    -}
-                                                    (VLISTA params) -> (interprete [] ((lazyE params params):re) c1 ((TRIPLA (tail (tail s)) (tail e) (tail c)):d))
+                                                    (VLISTA binders_vals) -> (interprete [] ((lazyE binders_vals binders_vals):re) c1 ((TRIPLA (tail (tail s)) (tail e) (tail c)):d))
                                                     _ -> error "manca [OGA] sull'ambiente di chiusura ric"
                                      _ -> error "non trovata [OGA] nell'ambiente di chiusura ricorsiva"
                         _  -> error "RAP: non trovata chiusura su s"

@@ -147,11 +147,11 @@ complist (x:y) n c = complist y n (comp x n (Cons:c))
 -- comp: funzione principale che esegue la compialzione del codice.
 -- Il codice viene prodotto da destra a sinistra e viene eseguito da sinistra a destra
 -- Parametri:
--- * e::LKC:        istruzione LKC da compilare
+-- * ist::LKC:        istruzione LKC da compilare
 -- * n::[[LKC]]:    ambiente statico, ovvero la lista di liste di nomi di variabili
 -- * c::[Secdexpr]: codice finora compilato
 comp :: LKC -> [[LKC]] -> [Secdexpr]->[Secdexpr]
-comp e n c = case e of 
+comp ist n c = case ist of 
               (VAR x) -> ((Ld (location x 0 n)):c)  -- carica sullo stack il valore della variabile
               (NUM x)-> (Ldc (NUM x)):c -- carica sullo stack il valore constante
               (BOO x)-> (Ldc (BOO x)):c  
@@ -241,11 +241,12 @@ comp e n c = case e of
                                 comp_body = comp x (v:n) [Rtn] 
                                 -- comp_body è la compilazione del codice della parte IN
                                 -- viene fatta con il record delle variabil in cima il all'ambiente 
-                                -- dinamico 
+                                -- statico 
                               in
                                 Push:(complist e (v:n) ((Ldf comp_body):Rap:c))
                                 -- Push inserisce il record farlocco
-                                -- complist e n produce il codice per calcolare il valore dei binders
+                                -- complist e v:n produce il codice per calcolare il valore dei binders, l'ambiente statico di complist contiene in cima anche il nome dei binders, questo perché le espressioni dei binders possono essere delle definizioni di funzioni ricorsive e di conseguenza devono avere a disposizione anche il loro nome che è contenuto in v.
+                                -- La presenza di v nell'ambiente statico porta un problema nel calcolo degli indirizzi, perché viene considerato un RA in più, che a runtime non è presente. Per questo motivo viene prima eseguita una PUSH (che non modifica l'ambiente statico) la quale aggiunge un RA fittizzio che rappresenta l'RA v dell'ambiente dinamico.
                                 -- Ldf costruisce la chiusura per la parte IN (codice prodotto da   comp_body)
                                 -- Ap esegue la chiusura che si trova in cima alla pila
                                 -- c è il codice finora prodotto.
