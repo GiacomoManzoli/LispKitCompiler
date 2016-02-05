@@ -261,6 +261,7 @@ exp x =  expa x
 -- ############################################################################
 -- expa: funzione che rappresenta le produzioni del non terminale ExpA
 -- 5) ExpA​ ::= T E1
+-- Trad(Expa) = Trad(E1)
 expa :: [Token] -> Exc ([Token], LKC)
 expa a = do
            (x, trad_t) <- funt a

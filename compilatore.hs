@@ -176,8 +176,7 @@ comp ist n c = case ist of
                   x sono i parametri formali della funzione
                   y è il corpo della funzione
                   Il compilatore quindi produce l'istruzione per creare la chiusura della funzione (Ldf)
-                  Il codice della funzione viene ottenuto compilando y in un nuovo ambiente statico contente
-                  i parametri formali.
+                  Il codice della funzione viene ottenuto compilando y in un nuovo ambiente statico contente i parametri formali.
                   Il codice prodotto termina con un Rtn per far riprendere l'esecuzione del programma
               -}
               (LAMBDAC x y)-> (Ldf (comp y (x:n) [Rtn])):c 
@@ -229,9 +228,7 @@ comp ist n c = case ist of
                   Si riesce ad implementare questa cosa in Haskell grazie alla Lazy evaluation.
 
                   Per evitare problemi nel calcolo degli indirizzi, prima di inserire il codice per calcolare i parametri attuali, è necessario inserire l'istruzione (Push) che crea un RA farlocco [OGA] che permette al compilatore di calcolare gli indirizzi corretti nel caso la parte destra di un binder utilizzi delle variabili presenti nella parte sinistra del binder. 
-                  Ovvero:
-                      x = z + y
-                      w = x + 2
+                  
                   Tuttavia, se il binder definisce una funzione, questa può utilizzare dei binder sinistri dal momento che l'ambiente di esecuzione della funzione è diverso.
 
               -}

@@ -254,7 +254,7 @@ funy :: [Token] -> Exc [Token]
 funy ((Symbol LPAREN):b)      =  do
                                  x<-seq_exp b
                                  rec_rp x
-funy x = Return x -- a causa di 10.2) Y ::= Epsilon devo considerare anche il follow
+funy x = Return x -- a causa di 10.2) Y ::= Epsilon
 
 -- seq_exp: funzione che rappresenta le produzioni del non terminale seq_exp
 -- 14) ​Seq_Exp​ ::= Exp ; Seq_Exp
