@@ -16,8 +16,8 @@ import Analizzatore
   Tipo che modella gli R-valori delle variabili. Si tratta dei valori da mettere nella pila S e nell'ambiente dinamico E. In particolare CLO modella le chiusure.
   V LKC - rappresenta i valori "normali", interi, booleani, stringhe...
   OGA   - record di attivazione farlocco
-  CLO [Secdexpr] [[Valore]] - Chiurusa, il primo parametro è il codice della funzione, mentre il secondo contiene la copia dell'ambiente di esecuzione 
-  VLISTA [Valore] - Rappresenta una lista di parametri che può trovarsi in cima alla pila
+  CLO [Secdexpr] [[Valore]] - Chiurusa, il primo parametro Ã¨ il codice della funzione, mentre il secondo contiene la copia dell'ambiente di esecuzione 
+  VLISTA [Valore] - Rappresenta una lista di parametri che puÃ² trovarsi in cima alla pila
 -}
 data Valore = V LKC
             | OGA 
@@ -27,7 +27,7 @@ data Valore = V LKC
 
 -- datatype dei valori del Dump *)
 {-
-  TRIPLA è il datatype per i dati da tenere nel dump
+  TRIPLA Ã¨ il datatype per i dati da tenere nel dump
   CONR viene utilizzato per gli if-then-else
 -}
 data Dump = CONTR  [Secdexpr] 
@@ -38,7 +38,7 @@ data Dump = CONTR  [Secdexpr]
 
 
 -- ##############################################
---  Funzioni d'utilità
+--  Funzioni d'utilitÃ 
 -- ##############################################
 
 --funzione che crea l'ambiente dinamico ricorsivo necessario per il trattamento della ricorsione. Serve nel caso Rap
@@ -48,7 +48,7 @@ data Dump = CONTR  [Secdexpr]
 lazyE::[Valore]-> [Valore]->[Valore] 
 lazyE [] _ = []
 {-
-  Se la lista non è vuota esegue lazyClo sull'elemento in testa, dopodiché continua ricorsivamente sui valori successivi
+  Se la lista non Ã¨ vuota esegue lazyClo sull'elemento in testa, dopodichÃ© continua ricorsivamente sui valori successivi
 -} 
 lazyE (a:b) c = ((lazyClo a c):(lazyE b c))
 
@@ -59,7 +59,7 @@ lazyClo:: Valore -> [Valore] -> Valore
 
   Potrebbe esserci un errore in questa funzione
 -}
-lazyClo (CLO a b) c = (CLO a ((lazyE c c):b))
+lazyClo (CLO a b) c = (CLO a ((lazyE c c):(tail b))) -- Ã¨ necessario rimuovere [OGA] anche dall'ambiente delle chiusure
 lazyClo (V x) _= (V x) 
 lazyClo (VLISTA x) _= (VLISTA x)
 lazyClo x _= error ("LazyClo trova valore incompatibile" ++ (show x))
@@ -88,7 +88,7 @@ vtl (VLISTA (a:b)) = VLISTA b
 vtl (VLISTA [])  = error "vtl trovata lista vuota";
 vtl _ = error "vtl non trova VLISTA"
 
--- vatom: test che verifica se il valore ricevuto come parametro è atomico o no
+-- vatom: test che verifica se il valore ricevuto come parametro Ã¨ atomico o no
 vatom :: Valore -> Valore
 vatom (V k)= V (BOO True)
 vatom _ = V (BOO False)     
@@ -97,7 +97,7 @@ vatom _ = V (BOO False)
 bool2s_espressione :: Bool -> LKC            
 bool2s_espressione b = if b then (BOO True) else (BOO False)
 
--- eqValore: test di uguaglianza per il tipo Valore, si adatta ai tipi dei parametri con cui è invocata
+-- eqValore: test di uguaglianza per il tipo Valore, si adatta ai tipi dei parametri con cui Ã¨ invocata
 eqValore :: Valore -> Valore -> Bool
 eqValore a@(V _) b = (eqV a b)
 eqValore a@(VLISTA _) b = (eqVLISTA a b)
@@ -172,7 +172,7 @@ interprete s e c d =
                         case head (tail s) of 
                                   (VLISTA x) -> (interprete (VLISTA ((head s):x):(tail (tail s))) e (tail c) d)
                                   x -> error ("CONS: il secondo argomento non e' una lista" ++ (show  x))
-                    -- Controlla se il primo elemento dello stack è un valore atomico
+                    -- Controlla se il primo elemento dello stack Ã¨ un valore atomico
                     Atom ->  (interprete ((vatom (head s)):(tail s)) e (tail c) d)
                     -- Valuta il booleano che si trova in cima allo stack, in base al valore sceglie che blocco eseguire
                     -- nel dump viene inserito in testa ((CONTR (tail c)):d ovvero il resto del programma
@@ -185,16 +185,16 @@ interprete s e c d =
                                              _ -> error "JOIN: il dump non contiene controllo"
                     {-
                       Costruzione della chiusura di una funzione, viene messo in cima allo stack il valore chiusura con il codice e con la copia dell'ambiente d'esecuzione, l'esecuzione continua dall'istruzione successiva.
-                      sl è il codice della funzione
+                      sl Ã¨ il codice della funzione
                     -}
                     Ldf sl -> (interprete ((CLO sl e):s) e (tail c) d)
                     -- Invoca la funzione che si trova in cima allo stack
-                    -- come secondo elemento dello stack c'è la lista dei parametri attuali della funzione
+                    -- come secondo elemento dello stack c'Ã¨ la lista dei parametri attuali della funzione
                     Ap -> case (head s) of 
                             (CLO cf ef) -> case (head (tail s)) of
                                         -- la funzione viene eseguita con
                                         --   * stack vuoto
-                                        --   * ambiente composto da x (parametri attuali) seguito da e1 che è 
+                                        --   * ambiente composto da x (parametri attuali) seguito da e1 che Ã¨ 
                                         --     l'ambiente di definizione delle funzione
                                         --   * c1, ovvero la lista di [Secdexpr] che compone il corpo della funzione
                                         -- Nel dump viene salvato lo stato corrente della macchina, ovvero lo stack 
@@ -205,22 +205,22 @@ interprete s e c d =
                               
                             _  -> error "AP senza chiusura su s"
                     -- Recupera dal Dump lo stato della macchina prima dell'invocazione della funzione
-                    -- Nello stack viene aggiunto in cima (head s) che è il valore ritornato dalla funzione
+                    -- Nello stack viene aggiunto in cima (head s) che Ã¨ il valore ritornato dalla funzione
                     Rtn ->  case (head d) of (TRIPLA s1 e1 c1) -> (interprete ((head s):s1) e1 c1 (tail d))
                                              _ ->  error  "RTN: non trovata TRIPLA su dump"   
                     -- Invocazione di una funzione ricorsiva, il primo elemento dello stack deve essere una chiusura
-                    -- mentre il secondo è la lista dei parametri attuali
+                    -- mentre il secondo Ã¨ la lista dei parametri attuali
                     Rap -> case (head s) of  
                         (CLO c1 e1) ->  case e1 of
                                      -- Il primo record di attivazione dell'ambiente della chiusura deve essere 
-                                     -- un record [OGA], altrimenti è necessario sollevare un'errore
+                                     -- un record [OGA], altrimenti Ã¨ necessario sollevare un'errore
                                      ([OGA]:re) -> case (head (tail s)) of
                                                    {-
                                                       Nello stack, sotto la chiusura, deve esserci la VLISTA contenente i valori delle parti destre dei binders.
-                                                      Se c'è viene eseguito il corpo della funzione con:
+                                                      Se c'Ã¨ viene eseguito il corpo della funzione con:
                                                         - stack vuoto
                                                         - ambiente dinamico con in cima la lista delle parti destre dei binders e sotto l'ambiente della chiusura. (LazyE ...) fa si che la lista dei parametri diventi circolare e viene messo al posto di OGA. 
-                                                        - come controllo c'è il codice della funzione
+                                                        - come controllo c'Ã¨ il codice della funzione
                                                       Viene poi fatto il dump dello stato attuale
                                                    -}
                                                     (VLISTA binders_vals) -> (interprete [] ((lazyE binders_vals binders_vals):re) c1 ((TRIPLA (tail (tail s)) (tail e) (tail c)):d))
